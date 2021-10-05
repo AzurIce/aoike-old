@@ -19,7 +19,7 @@ export default createStore({
     //   state.settings = settings;
     // },
     setPostsDir(state: any, postsDir: string) {
-      ipcRenderer.invoke("savePostsDir").then(() => {
+      ipcRenderer.invoke("savePostsDir", postsDir).then(() => {
         state.settings.postsDir = postsDir;
       });
     },

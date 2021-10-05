@@ -27,6 +27,11 @@ export default defineComponent({
   computed: {
     ...mapState(["settings"]),
   },
+  watch: {
+    settings(newSettings) {
+      this.currentPostsDir = newSettings.postsDir;
+    },
+  },
   data() {
     return {
       currentPostsDir: "",
@@ -44,12 +49,8 @@ export default defineComponent({
         this.currentPostsDir = res.filePaths[0].replace(/\\/g, "/");
       }
     },
-    async savePostsFolder(): Promise<void> {
-      ipcRenderer.invoke("savePostsDir", this.currentPostsDir).then((res) => {
-        if (res) {
-          this.setPostsDir(this.currentPostsDir);
-        }
-      });
+    savePostsFolder(): void {
+      this.setPostsDir(this.currentPostsDir);
     },
   },
 });
