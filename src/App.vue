@@ -1,11 +1,14 @@
 <template>
+  {{ settings }}
   <!-- <img alt="Vue logo" src="./assets/logo.png" />
   <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" /> -->
   <settings />
 </template>
 
 <script lang="ts">
+import { ipcRenderer } from "electron";
 import { Options, Vue } from "vue-class-component";
+import { State, Mutation } from "vuex-class";
 import HelloWorld from "./components/HelloWorld.vue";
 import Settings from "./components/Settings.vue";
 
@@ -15,7 +18,18 @@ import Settings from "./components/Settings.vue";
     Settings,
   },
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+  @State("settings") settings: any;
+  @Mutation setSettings: any;
+
+  mounted(): void {
+    // console.log("[Renderer/mounted]");
+    (async () => {
+      const res = await ipcRenderer.invoke("getSettings");
+      this.setSettings(res);
+    })();
+  }
+}
 </script>
 
 <style>
