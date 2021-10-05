@@ -3,6 +3,7 @@
 import { app, protocol, BrowserWindow } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer";
+import App from "./app";
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 // Scheme must be registered before the app is ready
@@ -11,6 +12,8 @@ protocol.registerSchemesAsPrivileged([
 ]);
 
 async function createWindow() {
+  const aoike = new App(__dirname);
+
   // Create the browser window.
   const win = new BrowserWindow({
     width: 800,
@@ -58,7 +61,7 @@ app.on("ready", async () => {
     // Install Vue Devtools
     try {
       await installExtension(VUEJS3_DEVTOOLS);
-    } catch (e) {
+    } catch (e: any) {
       console.error("Vue Devtools failed to install:", e.toString());
     }
   }
