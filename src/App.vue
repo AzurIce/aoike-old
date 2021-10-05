@@ -1,35 +1,18 @@
 <template>
-  {{ settings }}
-  <!-- <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" /> -->
-  <settings />
+  <img alt="Vue logo" src="./assets/logo.png" />
+  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
 </template>
 
 <script lang="ts">
-import { ipcRenderer } from "electron";
-import { Options, Vue } from "vue-class-component";
-import { State, Mutation } from "vuex-class";
+import { defineComponent } from "vue";
 import HelloWorld from "./components/HelloWorld.vue";
-import Settings from "./components/Settings.vue";
 
-@Options({
+export default defineComponent({
+  name: "App",
   components: {
     HelloWorld,
-    Settings,
   },
-})
-export default class App extends Vue {
-  @State("settings") settings: any;
-  @Mutation setSettings: any;
-
-  mounted(): void {
-    // console.log("[Renderer/mounted]");
-    (async () => {
-      const res = await ipcRenderer.invoke("getSettings");
-      this.setSettings(res);
-    })();
-  }
-}
+});
 </script>
 
 <style>
