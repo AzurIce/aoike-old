@@ -13,10 +13,14 @@
   },
   "main": "background.js",
   "dependencies": {
+    "@ant-design/icons-vue": "^6.0.1",
     "ant-design-vue": "^2.2.8",
     "core-js": "^3.6.5",
+    "lowdb": "^3.0.0",
     "vue": "^3.0.0",
-    "vue-class-component": "^8.0.0-0"
+    "vue-class-component": "^8.0.0-0",
+    "vuex": "^4.0.2",
+    "vuex-class": "^0.3.2"
   },
   "devDependencies": {
     "@types/electron-devtools-installer": "^2.2.0",

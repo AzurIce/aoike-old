@@ -1,5 +1,7 @@
 "use strict";
 
+import App from "./app";
+
 import { app, protocol, BrowserWindow } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer";
@@ -33,6 +35,9 @@ async function createWindow() {
     // Load the index.html when not in development
     win.loadURL("app://./index.html");
   }
+
+  const myApp = new App(__dirname);
+  // console.log(myApp);
 }
 
 // Quit when all windows are closed.
@@ -58,7 +63,7 @@ app.on("ready", async () => {
     // Install Vue Devtools
     try {
       await installExtension(VUEJS3_DEVTOOLS);
-    } catch (e) {
+    } catch (e: any) {
       console.error("Vue Devtools failed to install:", e.toString());
     }
   }

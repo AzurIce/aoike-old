@@ -19,7 +19,7 @@
   resolved "https://repo.huaweicloud.com/repository/npm/@ant-design/icons-svg/-/icons-svg-4.2.1.tgz#8630da8eb4471a4aabdaed7d1ff6a97dcb2cf05a"
   integrity sha512-EB0iwlKDGpG93hW8f85CTJTs4SvMX7tt5ceupvhALp1IF44SeUFOMhKUOYqpsoYWQKAOuTRDMqn75rEaKDp0Xw==
 
-"@ant-design/icons-vue@^6.0.0":
+"@ant-design/icons-vue@^6.0.0", "@ant-design/icons-vue@^6.0.1":
   version "6.0.1"
   resolved "https://repo.huaweicloud.com/repository/npm/@ant-design/icons-vue/-/icons-vue-6.0.1.tgz#9d804c3c74d2cfaf97cb18e582d3b9400934f5fd"
   integrity sha512-HigIgEVV6bbcrz2A92/qDzi/aKWB5EC6b6E1mxMB6aQA7ksiKY+gi4U94TpqyEIIhR23uaDrjufJ+xCZQ+vx6Q==
@@ -1736,6 +1736,11 @@
     vue-template-es2015-compiler "^1.9.0"
   optionalDependencies:
     prettier "^1.18.2"
+
+"@vue/devtools-api@^6.0.0-beta.11":
+  version "6.0.0-beta.18"
+  resolved "https://repo.huaweicloud.com/repository/npm/@vue/devtools-api/-/devtools-api-6.0.0-beta.18.tgz#84c0aff9289a57294cb97490811f69e8a0a67f8a"
+  integrity sha512-56vRhO7nXWWFYTx520BQSDlQH5VYpwy62hFDEqi2yHHEBpEqseOP5WYQusq7BEW3DXSY9E9cfPVR5CFtJbKuMg==
 
 "@vue/eslint-config-prettier@^6.0.0":
   version "6.0.0"
@@ -6682,6 +6687,13 @@ loose-envify@^1.0.0:
   dependencies:
     js-tokens "^3.0.0 || ^4.0.0"
 
+lowdb@^3.0.0:
+  version "3.0.0"
+  resolved "https://repo.huaweicloud.com/repository/npm/lowdb/-/lowdb-3.0.0.tgz#c10ab4e7eb86f1cbe255e35e60ffb0c6f42049e0"
+  integrity sha512-9KZRulmIcU8fZuWiaM0d5e2/nPnrFyXkeXVpqT+MJS+vgbgOf1EbtvgQmba8HwUFgDl1oeZR6XqEJnkJmQdKmg==
+  dependencies:
+    steno "^2.1.0"
+
 lower-case@^1.1.1:
   version "1.1.4"
   resolved "https://registry.nlark.com/lower-case/download/lower-case-1.1.4.tgz#9a2cabd1b9e8e0ae993a4bf7d5875c39c42e8eac"
@@ -9309,6 +9321,11 @@ static-extend@^0.1.1:
   resolved "https://registry.npm.taobao.org/statuses/download/statuses-1.5.0.tgz?cache=0&sync_timestamp=1609654066899&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fstatuses%2Fdownload%2Fstatuses-1.5.0.tgz#161c7dac177659fd9811f43771fa99381478628c"
   integrity sha1-Fhx9rBd2Wf2YEfQ3cfqZOBR4Yow=
 
+steno@^2.1.0:
+  version "2.1.0"
+  resolved "https://repo.huaweicloud.com/repository/npm/steno/-/steno-2.1.0.tgz#05a9c378ce42ed04f642cda6fcb41787a10e4e33"
+  integrity sha512-mauOsiaqTNGFkWqIfwcm3y/fq+qKKaIWf1vf3ocOuTdco9XoHCO2AGF1gFYXuZFSWuP38Q8LBHBGJv2KnJSXyA==
+
 stream-browserify@^2.0.1:
   version "2.0.2"
   resolved "https://registry.npm.taobao.org/stream-browserify/download/stream-browserify-2.0.2.tgz#87521d38a44aa7ee91ce1cd2a47df0cb49dd660b"
@@ -10305,6 +10322,18 @@ vue@^3.0.0:
     "@vue/runtime-dom" "3.2.19"
     "@vue/server-renderer" "3.2.19"
     "@vue/shared" "3.2.19"
+
+vuex-class@^0.3.2:
+  version "0.3.2"
+  resolved "https://repo.huaweicloud.com/repository/npm/vuex-class/-/vuex-class-0.3.2.tgz#c7e96a076c1682137d4d23a8dcfdc63f220e17a8"
+  integrity sha512-m0w7/FMsNcwJgunJeM+wcNaHzK2KX1K1rw2WUQf7Q16ndXHo7pflRyOV/E8795JO/7fstyjH3EgqBI4h4n4qXQ==
+
+vuex@^4.0.2:
+  version "4.0.2"
+  resolved "https://repo.huaweicloud.com/repository/npm/vuex/-/vuex-4.0.2.tgz#f896dbd5bf2a0e963f00c67e9b610de749ccacc9"
+  integrity sha512-M6r8uxELjZIK8kTKDGgZTYX/ahzblnzC4isU1tpmEuOIIKmV+TRdc+H4s8ds2NuZ7wpUTdGRzJRtoj+lI+pc0Q==
+  dependencies:
+    "@vue/devtools-api" "^6.0.0-beta.11"
 
 warning@^4.0.0:
   version "4.0.3"
