@@ -4,7 +4,7 @@
   <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" /> -->
   <a-layout style="height: 100%">
     <a-layout-sider style="background: #fff">
-      <a-menu mode="inline">
+      <a-menu mode="inline" v-model:selectedKeys="selectedKeys">
         <a-menu-item key="Posts">
           <router-link to="/posts">Posts</router-link>
         </a-menu-item>
@@ -37,9 +37,10 @@ export default defineComponent({
     // Settings,
     SettingOutlined,
   },
-  data() {
+  setup() {
+    const selectedKeys = ref<string[]>(["Settings"]);
     return {
-      current: ref<string[]>(["Settings"]),
+      selectedKeys,
     };
   },
   computed: {

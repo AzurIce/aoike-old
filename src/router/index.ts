@@ -4,14 +4,14 @@ import Posts from "../views/Posts.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: "/posts",
-    name: "Posts",
-    component: Posts,
-  },
-  {
     path: "/settings",
     name: "Settings",
     component: Settings,
+  },
+  {
+    path: "/posts",
+    name: "Posts",
+    component: Posts,
   },
   //   {
   //     path: "/about",
