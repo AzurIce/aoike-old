@@ -6,6 +6,7 @@ export default createStore({
     return {
       settings: {
         postsDir: "",
+        outputDir: "",
       },
     };
   },
@@ -21,6 +22,17 @@ export default createStore({
     setPostsDir(state: any, postsDir: string) {
       ipcRenderer.invoke("savePostsDir", postsDir).then(() => {
         state.settings.postsDir = postsDir;
+      });
+    },
+    setOutputDir(state: any, outputDir: string) {
+      ipcRenderer.invoke("saveOutputDir", outputDir).then(() => {
+        state.settings.outputDir = outputDir;
+      });
+    },
+    setSettings(state: any, settings: any) {
+      console.log(settings)
+      ipcRenderer.invoke("saveSettings", settings).then(() => {
+        state.settings = settings;
       });
     },
   },

@@ -1,16 +1,21 @@
 <template>
   <div class="post-card">
-    <a-card :title="title"> </a-card>
+    <a-card :title="post.title">
+      {{ post.fileDir }}
+    </a-card>
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from "@vue/runtime-core";
+// import { Post } from "../lib/Post";
+
+export default defineComponent({
   name: "PostCard",
   props: {
-    title: String,
+    post: Object,
   },
-};
+});
 </script>
 
 <style>
