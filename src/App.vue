@@ -5,8 +5,8 @@
   <a-layout style="height: 100%">
     <a-layout-sider style="background: #fff">
       <a-menu mode="inline">
-        <a-menu-item key="Home">
-          <router-link to="/">Home</router-link>
+        <a-menu-item key="Posts">
+          <router-link to="/posts">Posts</router-link>
         </a-menu-item>
         <a-menu-item key="Settings">
           <router-link to="/settings"><SettingOutlined /></router-link>
@@ -14,7 +14,7 @@
       </a-menu>
     </a-layout-sider>
     <!-- <a-layout-header></a-layout-header> -->
-    <a-layout-content>
+    <a-layout-content style="padding: 7px">
       <router-view />
     </a-layout-content>
     <!-- <a-layout-footer></a-layout-footer> -->
@@ -61,9 +61,8 @@ export default defineComponent({
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  /* text-align: center; */
   color: #2c3e50;
   /* margin-top: 60px; */
 }
-
 </style>

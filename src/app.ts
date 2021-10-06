@@ -38,5 +38,11 @@ export default class App {
       console.log("[ipcMain/setPostsDir]: ", postsDir);
       return await this.settings.set("postsDir", postsDir).write();
     });
+
+    ipcMain.handle("generateSite", async () => {
+      
+      // TODO: Main Page -> /build/index.html
+      // TODO: Posts -> /build/posts/xxx.html (will add folder support in the future)
+    });
   }
 }
