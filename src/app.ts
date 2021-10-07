@@ -65,7 +65,8 @@ export default class App {
       async (event, postsDir: string, outputDir: string, posts: Post[]) => {
         const html = "";
         const renderPath = join(outputDir, "index.html");
-        await ejs.
+        const templatePath = join(this.__dirname, "")
+        // await ejs.renderFile()
 
         // TODO: Main Page -> /build/index.html
         // TODO: Posts -> /build/posts/xxx.html (will add folder support in the future)
