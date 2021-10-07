@@ -6,7 +6,9 @@
       sub-title="Your intelligent crystals"
     >
       <template #extra>
-        <a-button type="primary" key="deploy">Generate /*& Publish*/</a-button>
+        <a-button type="primary" key="deploy" @click="onDeploy">
+          Generate /*& Publish*/
+        </a-button>
       </template>
     </a-page-header>
     <div style="overflow-y: auto; flex-grow: 1">
@@ -19,6 +21,7 @@
 
 <script lang="ts">
 import { defineComponent } from "@vue/runtime-core";
+import { ipcRenderer } from "electron";
 import { readdir } from "fs/promises";
 import { join, extname, basename } from "path";
 import { mapState } from "vuex";
@@ -39,6 +42,7 @@ export default defineComponent({
   computed: {
     ...mapState({
       postsDir: (state: any) => state.settings.postsDir,
+      outputDir: (state: any) => state.settinfs.outputDir,
     }),
   },
   watch: {
@@ -68,6 +72,15 @@ export default defineComponent({
       });
       this.posts = posts;
     },
+  },
+  async onDeploy() {
+    const res = await ipcRenderer.invoke(
+      "generateSite",
+      this.postsDir,
+      this.outputDir,
+      this.posts
+    );
+    console.log(res);
   },
 });
 </script>

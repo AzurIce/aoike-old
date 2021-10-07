@@ -4,6 +4,7 @@ import { readdir } from "fs/promises";
 
 import low from "lowdb";
 import FileSync from "lowdb/adapters/FileSync";
+import { Post } from "./lib/Post";
 
 interface SettingsData {
   postsDir: string;
@@ -58,9 +59,16 @@ export default class App {
       }
     );
 
-    ipcMain.handle("generateSite", async () => {
-      // TODO: Main Page -> /build/index.html
-      // TODO: Posts -> /build/posts/xxx.html (will add folder support in the future)
-    });
+    ipcMain.handle(
+      "generateSite",
+      async (event, postsDir: string, outputDir: string, posts: Post[]) => {
+        const html = "";
+        const renderPath = join(outputDir, "index.html");
+        
+
+        // TODO: Main Page -> /build/index.html
+        // TODO: Posts -> /build/posts/xxx.html (will add folder support in the future)
+      }
+    );
   }
 }
