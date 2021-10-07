@@ -16,6 +16,7 @@
     "@ant-design/icons-vue": "^6.0.1",
     "ant-design-vue": "^2.2.8",
     "core-js": "^3.6.5",
+    "ejs": "^3.1.6",
     "lowdb": "^1.0.0",
     "markdown-it": "^12.2.0",
     "vue": "^3.0.0",
@@ -23,6 +24,7 @@
     "vuex": "^4.0.2"
   },
   "devDependencies": {
+    "@types/ejs": "^3.1.0",
     "@types/electron-devtools-installer": "^2.2.0",
     "@types/lowdb": "^1.0.11",
     "@types/markdown-it": "^12.2.2",

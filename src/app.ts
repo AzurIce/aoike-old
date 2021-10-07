@@ -1,6 +1,7 @@
 import { join, extname } from "path";
 import { dialog, ipcMain } from "electron";
 import { readdir } from "fs/promises";
+import ejs from "ejs";
 
 import low from "lowdb";
 import FileSync from "lowdb/adapters/FileSync";
@@ -64,7 +65,7 @@ export default class App {
       async (event, postsDir: string, outputDir: string, posts: Post[]) => {
         const html = "";
         const renderPath = join(outputDir, "index.html");
-        
+        await ejs.
 
         // TODO: Main Page -> /build/index.html
         // TODO: Posts -> /build/posts/xxx.html (will add folder support in the future)
