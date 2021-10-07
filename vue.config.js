@@ -3,5 +3,8 @@ module.exports = {
     electronBuilder: {
       nodeIntegration: true,
     },
+    builderOptions: {
+      asar: false,
+    },
   },
 };
