@@ -1,0 +1,20 @@
+<div class="post-container">
+  <% posts.forEach(function(post) { %>
+    <article class="post">
+      <a href="<%= post.link %>">
+        <h2 class="post-title"><%= post.title %></h2>
+      </a>
+      <div class="post-info">
+        <span>
+          <%= post.createdDate %>
+        </span>
+        <span>
+          <%= post.modifiedDate %>
+        </span>
+      </div>
+      <div class="post-abstract">
+
+      </div>
+    </article>
+  <% }); %>
+</div>

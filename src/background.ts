@@ -11,10 +11,7 @@ protocol.registerSchemesAsPrivileged([
   { scheme: "app", privileges: { secure: true, standard: true } },
 ]);
 
-declare const __static: string;
-
 async function createWindow() {
-  console.log(__static);
   const aoike = new App(__dirname);
 
   // Create the browser window.

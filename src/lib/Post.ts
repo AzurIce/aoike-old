@@ -3,7 +3,10 @@
 
 export interface Post {
   fileDir: string;
+  fileName: string;
   title: string;
+  createdTime: string;
+  modifiedTime: string;
   // category: string[];
 }
 

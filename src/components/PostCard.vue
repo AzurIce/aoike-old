@@ -1,7 +1,13 @@
 <template>
   <div class="post-card">
     <a-card :title="post.title">
-      {{ post.fileDir }}
+      <a-card-meta>
+        <template #description>
+          fileDir: {{ post.fileDir }} <br />
+          createdTime: {{ post.createdTime }}<br />
+          modifiedTime: {{ post.modifiedTime }}
+        </template>
+      </a-card-meta>
     </a-card>
   </div>
 </template>

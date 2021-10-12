@@ -7,6 +7,9 @@ import low from "lowdb";
 import FileSync from "lowdb/adapters/FileSync";
 import { Post } from "./lib/Post";
 
+import { resolve } from './lib/utils/url';
+
+declare const __static: string;
 interface SettingsData {
   postsDir: string;
 }
@@ -60,17 +63,35 @@ export default class App {
       }
     );
 
+    /*
     ipcMain.handle(
       "generateSite",
       async (event, postsDir: string, outputDir: string, posts: Post[]) => {
-        const html = "";
+        const domain = "https://aoike.azurice.com";
+        let html = "";
         const renderPath = join(outputDir, "index.html");
-        const templatePath = join(this.__dirname, "")
-        // await ejs.renderFile()
+        const templatePath = join(__static, "defaults", "notes", "index.ejs");
+        let postsData = [];
+
+        postsData = posts.map((post) => {
+          const res: PostData = {
+            fileName: post.fileName,
+            title: post.title,
+            link: resolve(domain, post.fileName),
+            createdTime: post.createdTime,
+            modifiedTime: post.modifiedTime,
+          };
+          return res;
+        });
+        await ejs.renderFile(templatePath, postsData, async (err:any, str) => {
+          html = str;
+        });
+        return html;
 
         // TODO: Main Page -> /build/index.html
         // TODO: Posts -> /build/posts/xxx.html (will add folder support in the future)
       }
     );
+    */
   }
 }

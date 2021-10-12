@@ -22,12 +22,15 @@
 <script lang="ts">
 import { defineComponent } from "@vue/runtime-core";
 import { ipcRenderer } from "electron";
-import { readdir } from "fs/promises";
+import { readdir, stat } from "fs/promises";
 import { join, extname, basename } from "path";
 import { mapState } from "vuex";
 import PostCard from "../components/PostCard.vue";
 
 import { Post } from "../lib/Post";
+import moment from "moment";
+
+import { generateSite } from "../lib/renderer";
 
 export default defineComponent({
   name: "Posts",
@@ -42,7 +45,7 @@ export default defineComponent({
   computed: {
     ...mapState({
       postsDir: (state: any) => state.settings.postsDir,
-      outputDir: (state: any) => state.settinfs.outputDir,
+      outputDir: (state: any) => state.settings.outputDir,
     }),
   },
   watch: {
@@ -58,29 +61,40 @@ export default defineComponent({
   },
   methods: {
     async loadPosts(): Promise<void> {
-      const res = await readdir(this.postsDir);
-      let posts: Post[] = [];
-      res.forEach((name) => {
-        if (extname(name) == ".md") {
-          // console.log(join(this.postsDir, name));
-          // console.log(basename(join(this.postsDir, name), ".md"));
-          posts.push({
-            fileDir: join(this.postsDir, name),
-            title: basename(join(this.postsDir, name), ".md"),
-          } as Post);
-        }
+      const res = await (
+        await readdir(this.postsDir)
+      ).filter((fileName) => {
+        return extname(fileName) == ".md";
       });
+      let posts: Post[] = [];
+
+      for (let fileName of res) {
+        const fileDir = join(this.postsDir, fileName);
+        const fileStat = await stat(fileDir);
+        // console.log(fileStat.birthtime.toLocaleDateString());
+        // console.log(fileStat.birthtime.toLocaleTimeString());
+        // console.log(fileStat.birthtime.toLocaleString());
+        posts.push({
+          fileDir: fileDir,
+          fileName: basename(join(this.postsDir, fileName), ".md"),
+          title: fileName,
+          createdTime: moment(fileStat.birthtime).format("YYYY-MM-DD hh:mm:ss"),
+          modifiedTime: moment(fileStat.mtime).format("YYYY-MM-DD hh:mm:ss"),
+        } as Post);
+      }
       this.posts = posts;
     },
-  },
-  async onDeploy() {
-    const res = await ipcRenderer.invoke(
-      "generateSite",
-      this.postsDir,
-      this.outputDir,
-      this.posts
-    );
-    console.log(res);
+    async onDeploy() {
+      console.log("[onDeploy]");
+      const res = await generateSite(this.postsDir, this.outputDir, this.posts);
+      // const res = await ipcRenderer.invoke(
+      //   "generateSite",
+      //   this.postsDir,
+      //   this.outputDir,
+      //   posts
+      // );
+      console.log(res);
+    },
   },
 });
 </script>
