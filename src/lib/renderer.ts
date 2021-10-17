@@ -8,7 +8,12 @@ import {
 } from "./interfaces/rendererData";
 import ejs from "ejs";
 import { writeFile } from "fs/promises";
-import { ensureDirSync, writeFileSync } from "fs-extra";
+import {
+  ensureDirSync,
+  writeFileSync,
+  readdirSync,
+  removeSync,
+} from "fs-extra";
 
 // import less from "less";
 
@@ -120,9 +125,26 @@ export async function generateSite(
     domain: domain,
   };
 
+  await clearOutputFolder(outputDir);
+
   generateCss(outputDir);
   generateIndex(postsDir, outputDir, rendererData);
   generatePosts(postsDir, outputDir, rendererData);
 
   // TODO: Posts -> /build/posts/xxx.html (will add folder support in the future)
+}
+
+export async function clearOutputFolder(outputDir: string): Promise<void> {
+  const files = readdirSync(outputDir, { withFileTypes: true });
+  const needClearPath = files
+    .map((item) => item.name)
+    .filter((name: string) => name !== ".git");
+
+  try {
+    needClearPath.forEach(async (name: string) => {
+      removeSync(join(outputDir, name));
+    });
+  } catch (e) {
+    console.log("Delete file error", e);
+  }
 }
