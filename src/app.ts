@@ -1,7 +1,12 @@
 import { join, extname } from "path";
 import { dialog, ipcMain } from "electron";
-import { readdir } from "fs/promises";
-import { readFileSync, writeFileSync } from "fs-extra";
+import {
+  copySync,
+  ensureDirSync,
+  readFileSync,
+  writeFile,
+  writeFileSync,
+} from "fs-extra";
 import ejs from "ejs";
 
 import low from "lowdb";
@@ -10,8 +15,11 @@ import { Post } from "./lib/Post";
 
 import { resolve } from "./lib/utils/url";
 
-import { RendererData } from "./lib/interfaces/rendererData";
+import { RendererData, PostRendererData } from "./lib/interfaces/rendererData";
 import less from "less";
+
+import markdown from "./lib/markdown";
+import Renderer from "markdown-it/lib/renderer";
 
 // import gulp from "gulp";
 // import less from "gulp-less";
@@ -21,11 +29,23 @@ interface SettingsData {
   postsDir: string;
 }
 
+const domain = "aoike.azurice.com";
+
 export default class App {
   __dirname: string;
   settings: low.LowdbSync<any>;
+
+  themeDir: string;
+  themeTemplatesDir: string;
+  themeAssetsDir: string;
   constructor(__dirname: string) {
+    console.log("Main: " + __static);
+    console.log("Main: " + __dirname);
     this.__dirname = __dirname;
+    this.themeDir = join(__static, "defaults", "themes", "aoikeNotes");
+    this.themeTemplatesDir = join(this.themeDir, "templates");
+    this.themeAssetsDir = join(this.themeDir, "assets");
+
     this.settings = low(new FileSync(join(this.__dirname, "settings.json")));
     this.initDB();
     this.initIpcs();
@@ -70,7 +90,9 @@ export default class App {
       }
     );
 
-    ipcMain.on("generateCSS", (event, lessDir: string, cssDir: string) => {
+    ipcMain.on("generateCSS", (event, cssDir: string) => {
+      const lessDir = join(this.themeAssetsDir, "styles");
+      ensureDirSync(cssDir);
       const lessStr = readFileSync(join(lessDir, "main.less"), "utf-8");
       less.render(lessStr, { paths: [lessDir] }, (err, res) => {
         if (!err) {
@@ -83,6 +105,67 @@ export default class App {
         }
       });
     });
+
+    ipcMain.on(
+      "generatePosts",
+      (
+        event,
+        postsDir: string,
+        outputDir: string,
+        rendererData: RendererData
+      ) => {
+        const templatePath = join(this.themeTemplatesDir, "post.ejs");
+        ensureDirSync(join(outputDir, "posts"));
+        for (const post of rendererData.posts) {
+          const outputPath = join(outputDir, "posts", post.fileName + ".html");
+          post.content = readFileSync(
+            join(postsDir, post.fileName + ".md"),
+            "utf-8"
+          );
+
+          post.content = markdown.render(post.content);
+
+          const postRendererData: PostRendererData = {
+            post: post,
+            domain: domain,
+          };
+
+          let html = "";
+          ejs.renderFile(templatePath, postRendererData, (err: any, str) => {
+            if (err) {
+              event.returnValue = err;
+              console.log(err);
+            } else {
+              html = str;
+              writeFileSync(outputPath, html);
+            }
+          });
+        }
+        event.returnValue = true;
+      }
+    );
+
+    ipcMain.handle(
+      "generateIndex",
+      async (event, outputDir: string, rendererData: RendererData) => {
+        const outputPath = join(outputDir, "index.html");
+        const templatePath = join(this.themeTemplatesDir, "index.ejs");
+
+        let html = "";
+        await ejs.renderFile(
+          templatePath,
+          rendererData,
+          async (err: any, str) => {
+            if (err) {
+              console.log(err);
+            } else {
+              html = str;
+            }
+          }
+        );
+        return await writeFile(outputPath, html);
+      }
+    );
 
     /*
     ipcMain.handle(
