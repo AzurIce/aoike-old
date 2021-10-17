@@ -76,7 +76,7 @@ export async function generateSite(
     const res: PostData = {
       fileName: post.fileName,
       title: post.title,
-      link: resolve(resolve(domain, "posts"), post.fileName),
+      link: resolve(domain, "posts/"+post.fileName),
       createdTime: post.createdTime,
       modifiedTime: post.modifiedTime,
       content: "",
