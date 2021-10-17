@@ -81,6 +81,7 @@ export async function generateSite(
       modifiedTime: post.modifiedTime,
       content: "",
     };
+    // console.log(res);
     return res;
   });
 

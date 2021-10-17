@@ -82,6 +82,7 @@ export default defineComponent({
           modifiedTime: moment(fileStat.mtime).format("YYYY-MM-DD hh:mm:ss"),
         } as Post);
       }
+      // console.log(posts);
       this.posts = posts;
     },
     async onDeploy() {
