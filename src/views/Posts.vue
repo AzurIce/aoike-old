@@ -86,14 +86,14 @@ export default defineComponent({
     },
     async onDeploy() {
       console.log("[onDeploy]");
-      const res = await generateSite(this.postsDir, this.outputDir, this.posts);
+      await generateSite(this.postsDir, this.outputDir, this.posts);
       // const res = await ipcRenderer.invoke(
       //   "generateSite",
       //   this.postsDir,
       //   this.outputDir,
       //   posts
       // );
-      console.log(res);
+      // console.log(res);
     },
   },
 });

@@ -1,13 +1,20 @@
 import { join, extname } from "path";
 import { dialog, ipcMain } from "electron";
 import { readdir } from "fs/promises";
+import { readFileSync, writeFileSync } from "fs-extra";
 import ejs from "ejs";
 
 import low from "lowdb";
 import FileSync from "lowdb/adapters/FileSync";
 import { Post } from "./lib/Post";
 
-import { resolve } from './lib/utils/url';
+import { resolve } from "./lib/utils/url";
+
+import { RendererData } from "./lib/interfaces/rendererData";
+import less from "less";
+
+// import gulp from "gulp";
+// import less from "gulp-less";
 
 declare const __static: string;
 interface SettingsData {
@@ -62,6 +69,20 @@ export default class App {
           .write();
       }
     );
+
+    ipcMain.on("generateCSS", (event, lessDir: string, cssDir: string) => {
+      const lessStr = readFileSync(join(lessDir, "main.less"), "utf-8");
+      less.render(lessStr, { paths: [lessDir] }, (err, res) => {
+        if (!err) {
+          // console.log(res!.css);
+          writeFileSync(join(cssDir, "main.css"), res!.css);
+          event.returnValue = true;
+        } else {
+          console.log(err);
+          event.returnValue = false;
+        }
+      });
+    });
 
     /*
     ipcMain.handle(

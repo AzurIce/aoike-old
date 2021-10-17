@@ -2,9 +2,9 @@ module.exports = {
   pluginOptions: {
     electronBuilder: {
       nodeIntegration: true,
-    },
-    builderOptions: {
-      asar: false,
+      // builderOptions: {
+      //   asar: false,
+      // },
     },
   },
 };
