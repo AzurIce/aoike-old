@@ -127,7 +127,7 @@ export default class App {
 
           const postRendererData: PostRendererData = {
             post: post,
-            domain: domain,
+            domain: rendererData.domain,
           };
 
           let html = "";

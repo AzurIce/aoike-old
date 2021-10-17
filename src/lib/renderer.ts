@@ -93,7 +93,9 @@ export async function generateSite(
 
   generateCss(outputDir);
   generateIndex(postsDir, outputDir, rendererData);
+  console.log(rendererData.domain);
   generatePosts(postsDir, outputDir, rendererData);
+  console.log(rendererData.domain);
   writeFileSync(join(outputDir, "CNAME"), "aoike.azurice.com");
 
   // TODO: Posts -> /build/posts/xxx.html (will add folder support in the future)
