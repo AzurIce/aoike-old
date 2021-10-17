@@ -76,7 +76,7 @@ export async function generateSite(
     const res: PostData = {
       fileName: post.fileName,
       title: post.title,
-      link: resolve(domain, "posts/"+post.fileName),
+      link: resolve(domain, "posts/" + post.fileName),
       createdTime: post.createdTime,
       modifiedTime: post.modifiedTime,
       content: "",
@@ -94,7 +94,7 @@ export async function generateSite(
   generateCss(outputDir);
   generateIndex(postsDir, outputDir, rendererData);
   generatePosts(postsDir, outputDir, rendererData);
-  writeFileSync(join(outputDir, "CNAME"), domain);
+  writeFileSync(join(outputDir, "CNAME"), "aoike.azurice.com");
 
   // TODO: Posts -> /build/posts/xxx.html (will add folder support in the future)
 }
