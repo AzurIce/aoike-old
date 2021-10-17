@@ -94,6 +94,7 @@ export async function generateSite(
   generateCss(outputDir);
   generateIndex(postsDir, outputDir, rendererData);
   generatePosts(postsDir, outputDir, rendererData);
+  writeFileSync(join(outputDir, "CNAME"), domain);
 
   // TODO: Posts -> /build/posts/xxx.html (will add folder support in the future)
 }
