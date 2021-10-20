@@ -8,7 +8,12 @@ export interface PostData {
 }
 export interface PostRendererData {
   post: PostData;
+  siteName: string;
   domain: string;
+}
+
+export interface IndexRendererData extends RendererData {
+  siteName: string;
 }
 
 export interface RendererData {

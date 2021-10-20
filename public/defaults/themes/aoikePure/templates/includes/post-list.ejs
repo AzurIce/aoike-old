@@ -1,0 +1,23 @@
+<div class="post-list-container">
+    <div class="post-inner">
+        <% posts.forEach(function(post) { %>
+            <div class="post gt-bg-theme-color-second">
+                <div class="post-left">
+                    <div>
+                        <a href="<%= post.link %>">
+                            <span class="post-title gt-c-content-color-first"><%= post.title %></span>
+                        </a>
+                    </div>
+                    <div class="gt-post-content post-abstract gt-c-content-color-second">
+
+                    </div>
+                    <div class="post-info">
+                        <time class="post-time gt-c-content-color-first">
+                            修改于 · <%= post.modifiedTime %> · 发布于 · <%= post.createdTime %>
+                        </time>
+                    </div>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+</div>

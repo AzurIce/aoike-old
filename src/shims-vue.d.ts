@@ -6,3 +6,4 @@ declare module '*.vue' {
 }
 
 declare module 'markdown-it-katex';
+declare module 'markdown-it-highlightjs';

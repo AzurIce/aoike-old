@@ -1,0 +1,29 @@
+<html>
+<head>
+    <%- include('./includes/head') %>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.css">
+</head>
+<body>
+<div class="main gt-bg-theme-color-first">
+
+    <div class="post-container">
+        <div class="post-detail gt-bg-theme-color-second">
+            <article class="gt-post-content">
+                <h2 class="post-title">
+                    <%= post.title %>
+                </h2>
+                <div class="post-info">
+                    <time class="post-time gt-c-content-color-first">
+                        修改于 · <%= post.modifiedTime %> · 发布于 · <%= post.createdTime %>
+                    </time>
+                </div>
+                <div class="post-content">
+                    <%- post.content %>
+                </div>
+            </article>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

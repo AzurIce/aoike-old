@@ -15,7 +15,13 @@ import { Post } from "./lib/Post";
 
 import { resolve } from "./lib/utils/url";
 
-import { RendererData, PostRendererData } from "./lib/interfaces/rendererData";
+import importFrom from "import-from";
+
+import {
+  RendererData,
+  PostRendererData,
+  IndexRendererData,
+} from "./lib/interfaces/rendererData";
 import less from "less";
 
 import markdown from "./lib/markdown";
@@ -30,6 +36,7 @@ interface SettingsData {
 }
 
 const domain = "aoike.azurice.com";
+const siteName = "Aoike青池";
 
 export default class App {
   __dirname: string;
@@ -42,7 +49,7 @@ export default class App {
     console.log("Main: " + __static);
     console.log("Main: " + __dirname);
     this.__dirname = __dirname;
-    this.themeDir = join(__static, "defaults", "themes", "aoikeNotes");
+    this.themeDir = join(__static, "defaults", "themes", "aoikePure");
     this.themeTemplatesDir = join(this.themeDir, "templates");
     this.themeAssetsDir = join(this.themeDir, "assets");
 
@@ -94,10 +101,19 @@ export default class App {
       const lessDir = join(this.themeAssetsDir, "styles");
       ensureDirSync(cssDir);
       const lessStr = readFileSync(join(lessDir, "main.less"), "utf-8");
+      let css: string;
       less.render(lessStr, { paths: [lessDir] }, (err, res) => {
         if (!err) {
           // console.log(res!.css);
-          writeFileSync(join(cssDir, "main.css"), res!.css);
+          css = res!.css;
+          const cssOverride: any = importFrom(
+            this.themeDir,
+            "./style-override"
+          );
+          // TODO: cssOverride
+          css += cssOverride();
+          // console.log(css);
+          writeFileSync(join(cssDir, "main.css"), css);
           event.returnValue = true;
         } else {
           console.log(err);
@@ -127,7 +143,8 @@ export default class App {
 
           const postRendererData: PostRendererData = {
             post: post,
-            domain: rendererData.domain,
+            siteName: siteName,
+            ...rendererData,
           };
 
           let html = "";
@@ -151,10 +168,15 @@ export default class App {
         const outputPath = join(outputDir, "index.html");
         const templatePath = join(this.themeTemplatesDir, "index.ejs");
 
+        const indexRendererData: IndexRendererData = {
+          siteName,
+          ...rendererData,
+        };
+
         let html = "";
         await ejs.renderFile(
           templatePath,
-          rendererData,
+          indexRendererData,
           async (err: any, str) => {
             if (err) {
               console.log(err);

@@ -61,9 +61,6 @@ export async function generateCss(outputDir: string): Promise<void> {
   const res = ipcRenderer.sendSync("generateCSS", cssDir);
   console.log("[generateCSS]: ", res);
 
-  // TODO: cssOverride
-  // const cssOverride: any = importFrom(themeDir, "./style-override");
-  // console.log(cssOverride());
 }
 
 export async function generateSite(
