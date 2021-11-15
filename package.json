@@ -1,6 +1,10 @@
 {
   "name": "aoike",
-  "version": "0.1.0",
+  "version": "0.1.1",
+  "author": {
+    "name": "AzurIce",
+    "email": "973562770@qq.com"
+  },
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

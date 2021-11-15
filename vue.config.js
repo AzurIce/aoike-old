@@ -4,6 +4,12 @@ module.exports = {
       nodeIntegration: true,
       builderOptions: {
         asar: false,
+        win: {
+          target: ["nsis"],
+        },
+        linux: {
+          target: ["pacman"],
+        },
       },
     },
   },

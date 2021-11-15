@@ -17,7 +17,9 @@ import { resolve } from "./lib/utils/url";
 
 import importFrom from "import-from";
 
+import { Settings } from "@/lib/interfaces/Store";
 import {
+  PostData,
   RendererData,
   PostRendererData,
   IndexRendererData,
@@ -27,8 +29,11 @@ import less from "less";
 import markdown from "./lib/markdown";
 import Renderer from "markdown-it/lib/renderer";
 
-// import gulp from "gulp";
-// import less from "gulp-less";
+import { readdirSync, removeSync, copyFile, readdir, stat } from "fs-extra";
+import { basename } from "path";
+import moment from "moment";
+
+// import { generateCss, generateIndex, generatePosts } from "@/lib/renderer";
 
 declare const __static: string;
 interface SettingsData {
@@ -38,6 +43,20 @@ interface SettingsData {
 const domain = "aoike.azurice.com";
 const siteName = "Aoike青池";
 
+async function clearOutputFolder(outputDir: string): Promise<void> {
+  const files = readdirSync(outputDir, { withFileTypes: true });
+  const needClearPath = files
+    .map((item) => item.name)
+    .filter((name: string) => name !== ".git");
+
+  try {
+    needClearPath.forEach(async (name: string) => {
+      removeSync(join(outputDir, name));
+    });
+  } catch (e) {
+    console.log("Delete file error", e);
+  }
+}
 export default class App {
   __dirname: string;
   settings: low.LowdbSync<any>;
@@ -45,6 +64,8 @@ export default class App {
   themeDir: string;
   themeTemplatesDir: string;
   themeAssetsDir: string;
+
+  posts: Post[];
   constructor(__dirname: string) {
     console.log("Main: " + __static);
     console.log("Main: " + __dirname);
@@ -52,6 +73,7 @@ export default class App {
     this.themeDir = join(__static, "defaults", "themes", "aoikePure");
     this.themeTemplatesDir = join(this.themeDir, "templates");
     this.themeAssetsDir = join(this.themeDir, "assets");
+    this.posts = [];
 
     this.settings = low(new FileSync(join(this.__dirname, "settings.json")));
     this.initDB();
@@ -97,127 +119,162 @@ export default class App {
       }
     );
 
-    ipcMain.on("generateCSS", (event, cssDir: string) => {
-      const lessDir = join(this.themeAssetsDir, "styles");
-      ensureDirSync(cssDir);
-      const lessStr = readFileSync(join(lessDir, "main.less"), "utf-8");
-      let css: string;
-      less.render(lessStr, { paths: [lessDir] }, (err, res) => {
-        if (!err) {
-          // console.log(res!.css);
-          css = res!.css;
-          const cssOverride: any = importFrom(
-            this.themeDir,
-            "./style-override"
-          );
-          // TODO: cssOverride
-          css += cssOverride();
-          // console.log(css);
-          writeFileSync(join(cssDir, "main.css"), css);
-          event.returnValue = true;
-        } else {
-          console.log(err);
-          event.returnValue = false;
-        }
+    ipcMain.handle("loadPosts", async (event, postsDir) => {
+      const res = await (
+        await readdir(postsDir)
+      ).filter((fileName) => {
+        return extname(fileName) == ".md";
       });
+      this.posts = [];
+
+      for (const fileName of res) {
+        const fileDir = join(postsDir, fileName);
+        const fileStat = await stat(fileDir);
+        // console.log(fileStat.birthtime.toLocaleDateString());
+        // console.log(fileStat.birthtime.toLocaleTimeString());
+        // console.log(fileStat.birthtime.toLocaleString());
+        this.posts.push({
+          fileDir: fileDir,
+          fileName: basename(join(postsDir, fileName), ".md"),
+          title: fileName,
+          createdTime: moment(fileStat.birthtime).format("YYYY-MM-DD hh:mm:ss"),
+          modifiedTime: moment(fileStat.mtime).format("YYYY-MM-DD hh:mm:ss"),
+        } as Post);
+      }
+
+      return this.posts;
     });
 
-    ipcMain.on(
-      "generatePosts",
-      (
-        event,
-        postsDir: string,
-        outputDir: string,
-        rendererData: RendererData
-      ) => {
-        const templatePath = join(this.themeTemplatesDir, "post.ejs");
-        ensureDirSync(join(outputDir, "posts"));
-        for (const post of rendererData.posts) {
-          const outputPath = join(outputDir, "posts", post.fileName + ".html");
-          post.content = readFileSync(
-            join(postsDir, post.fileName + ".md"),
-            "utf-8"
-          );
+    ipcMain.on("test", (event) => {
+      event.returnValue = __static;
+    });
 
-          post.content = markdown.render(post.content);
-
-          const postRendererData: PostRendererData = {
-            post: post,
-            siteName: siteName,
-            ...rendererData,
-          };
-
-          let html = "";
-          ejs.renderFile(templatePath, postRendererData, (err: any, str) => {
-            if (err) {
-              event.returnValue = err;
-              console.log(err);
-            } else {
-              html = str;
-              writeFileSync(outputPath, html);
-            }
-          });
-        }
-        event.returnValue = true;
-      }
-    );
-
-    ipcMain.handle(
-      "generateIndex",
-      async (event, outputDir: string, rendererData: RendererData) => {
-        const outputPath = join(outputDir, "index.html");
-        const templatePath = join(this.themeTemplatesDir, "index.ejs");
-
-        const indexRendererData: IndexRendererData = {
-          siteName,
-          ...rendererData,
-        };
-
-        let html = "";
-        await ejs.renderFile(
-          templatePath,
-          indexRendererData,
-          async (err: any, str) => {
-            if (err) {
-              console.log(err);
-            } else {
-              html = str;
-            }
-          }
-        );
-        return await writeFile(outputPath, html);
-      }
-    );
-
-    /*
     ipcMain.handle(
       "generateSite",
-      async (event, postsDir: string, outputDir: string, posts: Post[]) => {
+      async (event, postsDir: string, outputDir: string) => {
         const domain = "https://aoike.azurice.com";
-        let html = "";
-        const renderPath = join(outputDir, "index.html");
-        const templatePath = join(__static, "defaults", "notes", "index.ejs");
-        let postsData = [];
+        const cssDir = join(outputDir, "styles");
 
-        postsData = posts.map((post) => {
+        const postsData = this.posts.map((post) => {
           const res: PostData = {
+            link: resolve(domain, "posts/" + post.fileName),
             fileName: post.fileName,
             title: post.title,
-            link: resolve(domain, post.fileName),
             createdTime: post.createdTime,
             modifiedTime: post.modifiedTime,
+            content: "",
           };
           return res;
         });
-        await ejs.renderFile(templatePath, postsData, async (err:any, str) => {
-          html = str;
-        });
-        return html;
 
-        // TODO: Main Page -> /build/index.html
+        const rendererData: RendererData = {
+          posts: postsData,
+          domain: domain,
+        };
+
+        await clearOutputFolder(outputDir);
+
+        copyFile(join(__static, "favicon.ico"), join(outputDir, "favicon.ico"));
+        ensureDirSync(join(outputDir, "images"));
+        copyFile(
+          join(__static, "images", "avatar.jpg"),
+          join(outputDir, "images", "avatar.jpg")
+        );
+
+        writeFileSync(join(outputDir, "CNAME"), "aoike.azurice.com");
+
+        this.generateCss(cssDir);
+        this.generateIndex(postsDir, outputDir, rendererData);
+
+        return await this.generatePosts(postsDir, outputDir, rendererData);
+
         // TODO: Posts -> /build/posts/xxx.html (will add folder support in the future)
       }
     );
-    */
+  }
+
+  generateCss(cssDir: string) {
+    const lessDir = join(this.themeAssetsDir, "styles");
+    ensureDirSync(cssDir);
+    const lessStr = readFileSync(join(lessDir, "main.less"), "utf-8");
+    let css: string;
+    less.render(lessStr, { paths: [lessDir] }, (err, res) => {
+      if (!err) {
+        // console.log(res!.css);
+        css = res!.css;
+        const cssOverride: any = importFrom(this.themeDir, "./style-override");
+        // TODO: cssOverride
+        css += cssOverride({ skin: "white" });
+        // console.log(css);
+        writeFileSync(join(cssDir, "main.css"), css);
+        return true;
+      } else {
+        console.log(err);
+        return false;
+      }
+    });
+  }
+
+  generatePosts(
+    postsDir: string,
+    outputDir: string,
+    rendererData: RendererData
+  ) {
+    const templatePath = join(this.themeTemplatesDir, "post.ejs");
+    ensureDirSync(join(outputDir, "posts"));
+    for (const post of rendererData.posts) {
+      const outputPath = join(outputDir, "posts", post.fileName + ".html");
+      post.content = readFileSync(
+        join(postsDir, post.fileName + ".md"),
+        "utf-8"
+      );
+
+      post.content = markdown.render(post.content);
+
+      const postRendererData: PostRendererData = {
+        post: post,
+        siteName: siteName,
+        ...rendererData,
+      };
+
+      let html = "";
+      ejs.renderFile(templatePath, postRendererData, (err: any, str) => {
+        if (err) {
+          return err;
+          console.log(err);
+        } else {
+          html = str;
+          writeFileSync(outputPath, html);
+        }
+      });
+    }
+  }
+
+  async generateIndex(
+    postsDir: string,
+    outputDir: string,
+    rendererData: RendererData
+  ) {
+    const outputPath = join(outputDir, "index.html");
+    const templatePath = join(this.themeTemplatesDir, "index.ejs");
+
+    const indexRendererData: IndexRendererData = {
+      siteName,
+      ...rendererData,
+    };
+
+    let html = "";
+    await ejs.renderFile(
+      templatePath,
+      indexRendererData,
+      async (err: any, str) => {
+        if (err) {
+          console.log(err);
+        } else {
+          html = str;
+        }
+      }
+    );
+    return await writeFile(outputPath, html);
   }
 }

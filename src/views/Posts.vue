@@ -6,9 +6,15 @@
       sub-title="Your intelligent crystals"
     >
       <template #extra>
-        <a-button type="primary" key="deploy" @click="onDeploy">
+        <a-button
+          type="primary"
+          key="deploy"
+          :loading="loading"
+          @click="onDeploy"
+        >
           Generate /*& Publish*/
         </a-button>
+        <a-button type="primary" @click="onTest">Test</a-button>
       </template>
     </a-page-header>
     <div style="overflow-y: auto; flex-grow: 1">
@@ -22,15 +28,10 @@
 <script lang="ts">
 import { defineComponent } from "@vue/runtime-core";
 import { ipcRenderer } from "electron";
-import { readdir, stat } from "fs/promises";
-import { join, extname, basename } from "path";
 import { mapState } from "vuex";
 import PostCard from "../components/PostCard.vue";
 
 import { Post } from "../lib/Post";
-import moment from "moment";
-
-import { generateSite } from "../lib/renderer";
 
 export default defineComponent({
   name: "Posts",
@@ -40,6 +41,7 @@ export default defineComponent({
   data(): any {
     return {
       posts: [] as Post[],
+      loading: false,
     };
   },
   computed: {
@@ -57,44 +59,35 @@ export default defineComponent({
     if (this.postsDir) {
       this.loadPosts();
     }
-    // console.log(this.postsDir)
   },
   methods: {
-    async loadPosts(): Promise<void> {
-      const res = await (
-        await readdir(this.postsDir)
-      ).filter((fileName) => {
-        return extname(fileName) == ".md";
-      });
-      let posts: Post[] = [];
-
-      for (let fileName of res) {
-        const fileDir = join(this.postsDir, fileName);
-        const fileStat = await stat(fileDir);
-        // console.log(fileStat.birthtime.toLocaleDateString());
-        // console.log(fileStat.birthtime.toLocaleTimeString());
-        // console.log(fileStat.birthtime.toLocaleString());
-        posts.push({
-          fileDir: fileDir,
-          fileName: basename(join(this.postsDir, fileName), ".md"),
-          title: fileName,
-          createdTime: moment(fileStat.birthtime).format("YYYY-MM-DD hh:mm:ss"),
-          modifiedTime: moment(fileStat.mtime).format("YYYY-MM-DD hh:mm:ss"),
-        } as Post);
-      }
-      // console.log(posts);
-      this.posts = posts;
+    onTest() {
+      const res = ipcRenderer.sendSync("test");
+      console.log(res);
     },
-    async onDeploy() {
+    loadPosts() {
+      ipcRenderer.invoke("loadPosts", this.postsDir).then((res) => {
+        // console.log(res);
+        this.posts = res;
+      });
+    },
+    onDeploy() {
+      this.loading = true;
+      this.$message.loading({ content: "Generating...", key: "toast" });
       console.log("[onDeploy]");
-      await generateSite(this.postsDir, this.outputDir, this.posts);
-      // const res = await ipcRenderer.invoke(
-      //   "generateSite",
-      //   this.postsDir,
-      //   this.outputDir,
-      //   posts
-      // );
-      // console.log(res);
+      ipcRenderer
+        .invoke("generateSite", this.postsDir, this.outputDir)
+        .then((res) => {
+          this.$message
+            .success({
+              content: "Success!",
+              key: "toast",
+              duration: 1,
+            })
+            .then(() => {
+              this.loading = false;
+            });
+        });
     },
   },
 });

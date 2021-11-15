@@ -1,8 +1,10 @@
 import { ipcRenderer } from "electron";
 import { createStore } from "vuex";
 
+import { State, Settings } from "../lib/interfaces/Store";
+
 export default createStore({
-  state() {
+  state(): State {
     return {
       settings: {
         postsDir: "",
@@ -11,26 +13,26 @@ export default createStore({
     };
   },
   mutations: {
-    loadSettings(state: any) {
-      ipcRenderer.invoke("getSettings").then((res) => {
+    loadSettings(state: State) {
+      ipcRenderer.invoke("getSettings").then((res: Settings) => {
         state.settings = res;
       });
     },
     // setSettings(state: any, settings: string) {
     //   state.settings = settings;
     // },
-    setPostsDir(state: any, postsDir: string) {
+    setPostsDir(state: State, postsDir: string) {
       ipcRenderer.invoke("savePostsDir", postsDir).then(() => {
         state.settings.postsDir = postsDir;
       });
     },
-    setOutputDir(state: any, outputDir: string) {
+    setOutputDir(state: State, outputDir: string) {
       ipcRenderer.invoke("saveOutputDir", outputDir).then(() => {
         state.settings.outputDir = outputDir;
       });
     },
-    setSettings(state: any, settings: any) {
-      console.log(settings)
+    setSettings(state: State, settings: Settings) {
+      console.log(settings);
       ipcRenderer.invoke("saveSettings", settings).then(() => {
         state.settings = settings;
       });

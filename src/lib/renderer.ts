@@ -13,6 +13,7 @@ import {
   writeFileSync,
   readdirSync,
   removeSync,
+  copyFile,
 } from "fs-extra";
 
 // import less from "less";
@@ -60,7 +61,6 @@ export async function generateCss(outputDir: string): Promise<void> {
   // console.log(lessPath);
   const res = ipcRenderer.sendSync("generateCSS", cssDir);
   console.log("[generateCSS]: ", res);
-
 }
 
 export async function generateSite(
@@ -71,9 +71,9 @@ export async function generateSite(
   let postsData = [];
   postsData = posts.map((post) => {
     const res: PostData = {
+      link: resolve(domain, "posts/" + post.fileName),
       fileName: post.fileName,
       title: post.title,
-      link: resolve(domain, "posts/" + post.fileName),
       createdTime: post.createdTime,
       modifiedTime: post.modifiedTime,
       content: "",
@@ -89,11 +89,18 @@ export async function generateSite(
 
   await clearOutputFolder(outputDir);
 
+  copyFile(join(__static, "favicon.ico"), join(outputDir, "favicon.ico"));
+  ensureDirSync(join(outputDir, "images"));
+  copyFile(
+    join(__static, "images", "avatar.jpg"),
+    join(outputDir, "images", "avatar.jpg")
+  );
+
   generateCss(outputDir);
   generateIndex(postsDir, outputDir, rendererData);
-  console.log(rendererData.domain);
+  // console.log(rendererData.domain);
   generatePosts(postsDir, outputDir, rendererData);
-  console.log(rendererData.domain);
+  // console.log(rendererData.domain);
   writeFileSync(join(outputDir, "CNAME"), "aoike.azurice.com");
 
   // TODO: Posts -> /build/posts/xxx.html (will add folder support in the future)
