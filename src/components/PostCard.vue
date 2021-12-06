@@ -3,7 +3,7 @@
     <a-card :title="post.title">
       <a-card-meta>
         <template #description>
-          fileDir: {{ post.fileDir }} <br />
+          filepath: {{ post.filepath }} <br />
           createdTime: {{ post.createdTime }}<br />
           modifiedTime: {{ post.modifiedTime }}
         </template>
