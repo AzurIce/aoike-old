@@ -2,11 +2,12 @@
 // import { join } from "path";
 
 export interface Post {
-  fileDir: string;
+  filepath: string;
   fileName: string;
   title: string;
   createdTime: string;
   modifiedTime: string;
+  category: string;
   // category: string[];
 }
 

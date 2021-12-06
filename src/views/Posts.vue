@@ -14,7 +14,7 @@
         >
           Generate /*& Publish*/
         </a-button>
-        <a-button type="primary" @click="onTest">Test</a-button>
+        <!-- <a-button type="primary" @click="onTest">Test</a-button> -->
       </template>
     </a-page-header>
     <div style="overflow-y: auto; flex-grow: 1">

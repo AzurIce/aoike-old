@@ -33,6 +33,7 @@
     "markdown-it-highlightjs": "^3.5.0",
     "markdown-it-katex": "^2.0.3",
     "moment": "^2.29.1",
+    "serialize-ts": "^2.6.0",
     "vue": "^3.0.0",
     "vue-router": "4",
     "vuex": "^4.0.2"

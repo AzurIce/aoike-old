@@ -1,11 +1,35 @@
+<% let categories = []; posts.forEach((post) => {
+    if (!categories.includes(post.category) && post.category) {
+        categories.push(post.category);
+    }
+}); %>
+
 <div class="post-list-container">
+    <div class="tags-container">
+        <button onclick="resetSel()">
+            All
+        </button>
+        <% categories.forEach((category, index)=> { %>
+            <a class="tag gt-c-content-color-first gt-a-link" category="<%= category %>">
+                <%= category %>
+            </a>
+            <% }); %>
+                <a class="tag gt-c-content-color-first gt-a-link" category="1">
+                    b
+                </a>
+                <a class="tag gt-c-content-color-first gt-a-link" category="2">
+                    c
+                </a>
+    </div>
     <div class="post-inner">
-        <% posts.forEach(function(post) { %>
-            <div class="post gt-bg-theme-color-second">
+        <% posts.forEach(function(post, index) { %>
+            <div class="post gt-bg-theme-color-second" index="<%= index %>">
                 <div class="post-left">
                     <div>
                         <a href="<%= post.link %>">
-                            <span class="post-title gt-c-content-color-first"><%= post.title %></span>
+                            <span class="post-title gt-c-content-color-first">
+                                <%= post.title %>
+                            </span>
                         </a>
                     </div>
                     <div class="gt-post-content post-abstract gt-c-content-color-second">
@@ -15,9 +39,46 @@
                         <time class="post-time gt-c-content-color-first">
                             修改于 · <%= post.modifiedTime %> · 发布于 · <%= post.createdTime %>
                         </time>
+                        <% if (post.category) {%>
+                            <a class="post-tag" category="<%=post.category%>">
+                                # <%= post.category %>
+                            </a>
+                        <% }%>
                     </div>
                 </div>
             </div>
-        <% }); %>
+            <% }); %>
     </div>
 </div>
+<script>
+    var categoryEls = document.getElementsByClassName("tag");
+    var postEls = document.getElementsByClassName("post");
+    // console.log(postEls);
+    for (var i = 0; i < categoryEls.length; i++) {
+        // console.log(postEls[i]);
+        categoryEls[i].addEventListener("click", (e) => {
+            var category = e.target.attributes.category.value;
+            // console.log(e.target.attributes);
+            // console.log(e.target.attributes.category.value);
+
+            for (postEl of postEls) {
+                var categoryEls = postEl.getElementsByClassName("post-tag");
+                // console.log(categoryEls)
+                if (categoryEls.length != 0) {
+                    if (categoryEls[0].attributes.category.value == category) {
+                        postEl.style.display = "block";
+                        continue;
+                    }
+                }
+                postEl.style.display = "none";
+            }
+        });
+    }
+
+    function resetSel() {
+        for (postEl of postEls) {
+            postEl.style.display = "block";
+            // console.log(postEl);
+        }
+    }
+</script>

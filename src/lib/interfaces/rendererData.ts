@@ -1,10 +1,12 @@
 export interface PostData {
+  filepath: string;
   fileName: string;
   title: string;
   link: string;
   createdTime: string;
   modifiedTime: string;
   content: string;
+  category: string;
 }
 export interface PostRendererData {
   post: PostData;
