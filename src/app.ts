@@ -75,7 +75,7 @@ export default class App {
       }
     );
 
-    ipcMain.handle("loadPosts", async (event, postsDir) => {
+    ipcMain.handle("loadPosts", async (event, postsDir: string) => {
       const mdFileList = getMdFiles(postsDir);
       console.log(mdFileList);
       this.posts = [];
@@ -86,13 +86,15 @@ export default class App {
         // console.log(fileStat.birthtime.toLocaleDateString());
         // console.log(fileStat.birthtime.toLocaleTimeString());
         // console.log(fileStat.birthtime.toLocaleString());
+        // console.log(dirname(filepath));
+        // console.log(dirname(filepath).slice(postsDir.length));
         this.posts.push({
           filepath: filepath,
           fileName: basename(filename, ".md"),
           title: filename,
           createdTime: moment(fileStat.birthtime).format("YYYY-MM-DD hh:mm:ss"),
           modifiedTime: moment(fileStat.mtime).format("YYYY-MM-DD hh:mm:ss"),
-          category: dirname(filepath),
+          category: dirname(filepath).slice(postsDir.length + 1),
         } as Post);
       }
 
