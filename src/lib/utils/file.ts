@@ -9,7 +9,7 @@ export function getMdFiles(dir: string): string[] {
     // console.log(filepath);
     if (!statSync(filepath).isFile() && name[0] != ".") {
       filepathList = filepathList.concat(getMdFiles(filepath));
-    } else if (extname(filepath) == ".md") {
+    } else if (extname(filepath) == ".md" && name[0] != "_") {
       filepathList.push(filepath);
     }
   });
