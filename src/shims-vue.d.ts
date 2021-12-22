@@ -7,4 +7,4 @@ declare module '*.vue' {
 
 declare module 'markdown-it-katex';
 declare module 'markdown-it-highlightjs';
-declare module '@wekanteam/markdown-it-mermaid';
+declare module 'markdown-it-textual-uml';

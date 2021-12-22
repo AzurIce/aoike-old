@@ -115,7 +115,16 @@ async function generatePosts(
     const outputPath = join(outputDir, "posts", post.fileName + ".html");
     post.content = readFileSync(post.filepath, "utf-8");
 
+    // console.log(post.content.match(/<div class="mermaid">([\s\S]*?)<\/div>/g));
+
     post.content = markdown.render(post.content);
+
+    post.content = post.content.replace(
+      /<pre><code class="hljs language-mermaid">([\s\S]*?)<\/code><\/pre>/g,
+      '<div class="mermaid">$1</div>'
+    );
+
+    post.content = post.content.replace(/&gt;/g, ">");
 
     const postRendererData: PostRendererData = {
       post: post,

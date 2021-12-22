@@ -8099,6 +8099,11 @@ markdown-it-katex@^2.0.3:
   dependencies:
     katex "^0.6.0"
 
+markdown-it-textual-uml@^0.1.9:
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/markdown-it-textual-uml/-/markdown-it-textual-uml-0.1.9.tgz#60bf9061facf6a750bcde20d80d20077e7df5abe"
+  integrity sha512-kBBCGRw3IjKpPxeU9ymmyEikluIlhR2d7Z0A5E28/v4l0Tj5RoRVAcjlAwtofmS+eOdXbQFxZs0iSTsZ9v+aoA==
+
 markdown-it@^12.2.0:
   version "12.2.0"
   resolved "https://registry.yarnpkg.com/markdown-it/-/markdown-it-12.2.0.tgz#091f720fd5db206f80de7a8d1f1a7035fd0d38db"
